@@ -239,6 +239,8 @@
             opacity: 0;
             transition: all 0.3s ease;
             display: none;
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .settings-panel.show {
@@ -309,6 +311,57 @@
             background: #3a3a3a;
         }
 
+        .technique-assignment {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .technique-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .technique-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .technique-label {
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .technique-select {
+            padding: 8px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .shuffle-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #9333ea 0%, #6b21a8 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
         .mute-control {
             display: flex;
             align-items: center;
@@ -359,6 +412,7 @@
             font-weight: bold;
             transition: all 0.1s ease;
             box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+            flex-direction: column;
         }
 
         .rhythm-indicator.active {
@@ -373,6 +427,13 @@
             100% {
                 box-shadow: 0 0 0 50px rgba(255, 68, 68, 0);
             }
+        }
+
+        .technique-display {
+            font-size: 1rem;
+            margin-top: 5px;
+            text-align: center;
+            min-height: 20px;
         }
 
         .timer-display {
@@ -453,6 +514,21 @@
                 padding: 12px 20px;
                 font-size: 1rem;
             }
+            
+            .technique-row {
+                grid-template-columns: 50px 1fr 1fr;
+                gap: 8px;
+                padding: 8px;
+            }
+            
+            .technique-select {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+            
+            .settings-panel {
+                padding: 80px 15px 15px;
+            }
         }
     </style>
 </head>
@@ -486,29 +562,32 @@
                 予測不可能な刺激により、神経回路の再編成が促進され、反応速度と適応力が改善されます。
             </p>
             
-            <h4>【音と色の対応】</h4>
+            <h4>【音と色の対応（例）】</h4>
             <div class="color-legend">
                 <div class="color-item">
                     <div class="color-dot" style="background: #FF6B6B;"></div>
-                    <span>音1: 赤（ジャブ）</span>
+                    <span>音1: 赤</span>
                 </div>
                 <div class="color-item">
                     <div class="color-dot" style="background: #4ECDC4;"></div>
-                    <span>音2: 青（ストレート）</span>
+                    <span>音2: 青</span>
                 </div>
                 <div class="color-item">
                     <div class="color-dot" style="background: #45B7D1;"></div>
-                    <span>音3: 水色（フック）</span>
+                    <span>音3: 水色</span>
                 </div>
                 <div class="color-item">
                     <div class="color-dot" style="background: #FFA07A;"></div>
-                    <span>音4: 橙（アッパー）</span>
+                    <span>音4: 橙</span>
                 </div>
                 <div class="color-item">
                     <div class="color-dot" style="background: #98D8C8;"></div>
-                    <span>音5: 緑（キック）</span>
+                    <span>音5: 緑</span>
                 </div>
             </div>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #999;">
+                ※ 下のメニューで各音に技と左右を自由に割り当てできます
+            </p>
             
             <h4>【トレーニング方法】</h4>
             <ul>
@@ -582,6 +661,113 @@
                         <div class="color-indicator" style="background: #98D8C8;"></div>
                     </button>
                 </div>
+                
+                <div class="technique-assignment">
+                    <label style="color: #ffaa44; margin-bottom: 10px; display: block;">技の割り当て</label>
+                    <div class="technique-grid">
+                        <div class="technique-row">
+                            <div class="technique-label" style="background: #FF6B6B; color: white;">音1</div>
+                            <select class="technique-select" id="tech1">
+                                <option value="ジャブ">ジャブ</option>
+                                <option value="ストレート">ストレート</option>
+                                <option value="フック">フック</option>
+                                <option value="アッパー">アッパー</option>
+                                <option value="裏拳">裏拳</option>
+                                <option value="前蹴り">前蹴り</option>
+                                <option value="膝蹴り">膝蹴り</option>
+                                <option value="ローキック">ローキック</option>
+                                <option value="ミドルキック">ミドルキック</option>
+                                <option value="ハイキック">ハイキック</option>
+                            </select>
+                            <select class="technique-select" id="side1">
+                                <option value="左">左</option>
+                                <option value="右">右</option>
+                                <option value="両方">両方</option>
+                            </select>
+                        </div>
+                        <div class="technique-row">
+                            <div class="technique-label" style="background: #4ECDC4; color: white;">音2</div>
+                            <select class="technique-select" id="tech2">
+                                <option value="ストレート">ストレート</option>
+                                <option value="ジャブ">ジャブ</option>
+                                <option value="フック">フック</option>
+                                <option value="アッパー">アッパー</option>
+                                <option value="裏拳">裏拳</option>
+                                <option value="前蹴り">前蹴り</option>
+                                <option value="膝蹴り">膝蹴り</option>
+                                <option value="ローキック">ローキック</option>
+                                <option value="ミドルキック">ミドルキック</option>
+                                <option value="ハイキック">ハイキック</option>
+                            </select>
+                            <select class="technique-select" id="side2">
+                                <option value="右">右</option>
+                                <option value="左">左</option>
+                                <option value="両方">両方</option>
+                            </select>
+                        </div>
+                        <div class="technique-row">
+                            <div class="technique-label" style="background: #45B7D1; color: white;">音3</div>
+                            <select class="technique-select" id="tech3">
+                                <option value="フック">フック</option>
+                                <option value="ジャブ">ジャブ</option>
+                                <option value="ストレート">ストレート</option>
+                                <option value="アッパー">アッパー</option>
+                                <option value="裏拳">裏拳</option>
+                                <option value="前蹴り">前蹴り</option>
+                                <option value="膝蹴り">膝蹴り</option>
+                                <option value="ローキック">ローキック</option>
+                                <option value="ミドルキック">ミドルキック</option>
+                                <option value="ハイキック">ハイキック</option>
+                            </select>
+                            <select class="technique-select" id="side3">
+                                <option value="左">左</option>
+                                <option value="右">右</option>
+                                <option value="両方">両方</option>
+                            </select>
+                        </div>
+                        <div class="technique-row">
+                            <div class="technique-label" style="background: #FFA07A; color: white;">音4</div>
+                            <select class="technique-select" id="tech4">
+                                <option value="アッパー">アッパー</option>
+                                <option value="ジャブ">ジャブ</option>
+                                <option value="ストレート">ストレート</option>
+                                <option value="フック">フック</option>
+                                <option value="裏拳">裏拳</option>
+                                <option value="前蹴り">前蹴り</option>
+                                <option value="膝蹴り">膝蹴り</option>
+                                <option value="ローキック">ローキック</option>
+                                <option value="ミドルキック">ミドルキック</option>
+                                <option value="ハイキック">ハイキック</option>
+                            </select>
+                            <select class="technique-select" id="side4">
+                                <option value="右">右</option>
+                                <option value="左">左</option>
+                                <option value="両方">両方</option>
+                            </select>
+                        </div>
+                        <div class="technique-row">
+                            <div class="technique-label" style="background: #98D8C8; color: white;">音5</div>
+                            <select class="technique-select" id="tech5">
+                                <option value="ローキック">ローキック</option>
+                                <option value="ミドルキック">ミドルキック</option>
+                                <option value="ハイキック">ハイキック</option>
+                                <option value="前蹴り">前蹴り</option>
+                                <option value="膝蹴り">膝蹴り</option>
+                                <option value="ジャブ">ジャブ</option>
+                                <option value="ストレート">ストレート</option>
+                                <option value="フック">フック</option>
+                                <option value="アッパー">アッパー</option>
+                                <option value="裏拳">裏拳</option>
+                            </select>
+                            <select class="technique-select" id="side5">
+                                <option value="右">右</option>
+                                <option value="左">左</option>
+                                <option value="両方">両方</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="shuffle-btn" id="shuffleBtn">🎲 ランダムに割り当て</button>
+                </div>
             </div>
 
             <div class="setting-group">
@@ -595,6 +781,7 @@
         <div class="training-display">
             <div class="rhythm-indicator" id="rhythmIndicator">
                 <span id="soundNumber"></span>
+                <div class="technique-display" id="techniqueDisplay"></div>
             </div>
             <div class="timer-display" id="timerDisplay">0:00</div>
             <div class="status-display" id="statusDisplay">スタートを押して開始</div>
@@ -633,6 +820,14 @@
             5: { freq: 880, color: '#98D8C8', name: '緑' }      // A5 - Green
         };
 
+        // Available techniques
+        const techniques = [
+            'ジャブ', 'ストレート', 'フック', 'アッパー', '裏拳',
+            '前蹴り', '膝蹴り', 'ローキック', 'ミドルキック', 'ハイキック'
+        ];
+        
+        const sides = ['左', '右', '両方'];
+
         // DOM elements
         const elements = {
             splashScreen: document.getElementById('splashScreen'),
@@ -644,13 +839,15 @@
             stopBtn: document.getElementById('stopBtn'),
             rhythmIndicator: document.getElementById('rhythmIndicator'),
             soundNumber: document.getElementById('soundNumber'),
+            techniqueDisplay: document.getElementById('techniqueDisplay'),
             timerDisplay: document.getElementById('timerDisplay'),
             statusDisplay: document.getElementById('statusDisplay'),
             trainingTime: document.getElementById('trainingTime'),
             rhythmCount: document.getElementById('rhythmCount'),
             rhythmCountValue: document.getElementById('rhythmCountValue'),
             restTime: document.getElementById('restTime'),
-            muteBtn: document.getElementById('muteBtn')
+            muteBtn: document.getElementById('muteBtn'),
+            shuffleBtn: document.getElementById('shuffleBtn')
         };
 
         // Initialize
@@ -721,6 +918,9 @@
                 elements.muteBtn.classList.toggle('active', isMuted);
             });
 
+            // Shuffle button
+            elements.shuffleBtn.addEventListener('click', shuffleTechniques);
+
             // Sound buttons
             document.querySelectorAll('.sound-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -743,6 +943,44 @@
             elements.stopBtn.addEventListener('click', stopTraining);
         }
 
+        function shuffleTechniques() {
+            // Shuffle techniques and sides for all 5 sounds
+            for (let i = 1; i <= 5; i++) {
+                const techSelect = document.getElementById(`tech${i}`);
+                const sideSelect = document.getElementById(`side${i}`);
+                
+                // Random technique
+                const randomTech = techniques[Math.floor(Math.random() * techniques.length)];
+                techSelect.value = randomTech;
+                
+                // Random side
+                const randomSide = sides[Math.floor(Math.random() * sides.length)];
+                sideSelect.value = randomSide;
+            }
+            
+            // Visual feedback
+            elements.shuffleBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                elements.shuffleBtn.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function getTechniqueText(soundType) {
+            const techSelect = document.getElementById(`tech${soundType}`);
+            const sideSelect = document.getElementById(`side${soundType}`);
+            
+            if (!techSelect || !sideSelect) return '';
+            
+            const tech = techSelect.value;
+            const side = sideSelect.value;
+            
+            if (side === '両方') {
+                return tech;
+            } else {
+                return `${side}${tech}`;
+            }
+        }
+
         function playSound(soundType) {
             // Change color regardless of mute status
             const config = soundConfig[soundType];
@@ -755,6 +993,10 @@
             elements.soundNumber.textContent = soundType;
             elements.soundNumber.style.color = '#fff';
             elements.soundNumber.style.textShadow = `0 0 20px ${config.color}`;
+            
+            // Show technique
+            elements.techniqueDisplay.textContent = getTechniqueText(soundType);
+            elements.techniqueDisplay.style.color = '#fff';
             
             // Play sound only if not muted
             if (!isMuted && audioContext) {
@@ -778,6 +1020,7 @@
             setTimeout(() => {
                 elements.rhythmIndicator.classList.remove('active');
                 elements.soundNumber.textContent = '';
+                elements.techniqueDisplay.textContent = '';
                 elements.rhythmIndicator.style.background = 
                     'radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(204, 0, 0, 0.1) 100%)';
                 elements.rhythmIndicator.style.boxShadow = 'none';
@@ -908,6 +1151,7 @@
             elements.statusDisplay.textContent = 'スタートを押して開始';
             elements.timerDisplay.textContent = '0:00';
             elements.soundNumber.textContent = '';
+            elements.techniqueDisplay.textContent = '';
             
             // Reset indicator color
             elements.rhythmIndicator.style.background = 
