@@ -1063,8 +1063,9 @@
                 oscillator.type = 'sine';
                 oscillator.frequency.value = frequency;
                 
+                // カウントダウン音も2倍に（0.3 → 0.6）
                 gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+                gainNode.gain.linearRampToValueAtTime(0.6, audioContext.currentTime + 0.01);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
                 
                 oscillator.connect(gainNode);
@@ -1148,26 +1149,36 @@
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('openMenuBtn').style.display = 'none';
 
-            // Countdown
+            // Countdown - 音付きで開始
             let countdown = 3;
-            document.getElementById('statusDisplay').textContent = `開始まで ${countdown}...`;
+            document.getElementById('statusDisplay').textContent = `${countdown}`;
+            
+            // 最初の「3」の音をすぐに鳴らす
+            playBeep(262, 0.2); // ド（C4）
             
             const countdownInterval = setInterval(() => {
                 countdown--;
                 if (countdown > 0) {
-                    document.getElementById('statusDisplay').textContent = `開始まで ${countdown}...`;
-                    playBeep(440); // シンプルなビープ音のみ
+                    document.getElementById('statusDisplay').textContent = `${countdown}`;
+                    if (countdown === 2) {
+                        playBeep(330, 0.2); // ミ（E4）
+                    } else if (countdown === 1) {
+                        playBeep(392, 0.2); // ソ（G4）
+                    }
                 } else {
                     clearInterval(countdownInterval);
                     document.getElementById('statusDisplay').textContent = 'スタート！';
-                    playBeep(880); // 高い音
+                    // スタート音（高音の和音風）
+                    playBeep(523, 0.3); // 高いド（C5）
+                    setTimeout(() => playBeep(659, 0.3), 50); // 高いミ（E5）
+                    setTimeout(() => playBeep(784, 0.3), 100); // 高いソ（G5）
                     
-                    // 0.5秒待ってからメイントレーニング開始
+                    // 1秒待ってからメイントレーニング開始
                     setTimeout(() => {
                         if (isTraining) {
                             startMainTraining();
                         }
-                    }, 500);
+                    }, 1000);
                 }
             }, 1000);
         }
