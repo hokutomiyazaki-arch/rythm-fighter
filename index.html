@@ -12,9 +12,11 @@
     <meta name="apple-mobile-web-app-title" content="Rhythm Fighter">
     <meta name="theme-color" content="#1a1a1a">
     
-    <!-- アイコン設定（フルパスで指定） -->
+    <!-- アイコン設定 - 絶対パスで指定 -->
     <link rel="icon" href="https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512.png">
     <link rel="apple-touch-icon" href="https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512.png">
+    
+    <!-- manifest.jsonを絶対パスで指定 -->
     <link rel="manifest" href="https://hokutomiyazaki-arch.github.io/rythm-fighter/manifest.json">
     
     <title>Rhythm Fighter - キックボクシング リズムトレーニング</title>
@@ -33,6 +35,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            position: fixed;
         }
 
         body {
@@ -42,7 +45,8 @@
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: #ffffff;
             overflow: hidden;
-            position: relative;
+            position: fixed;
+            touch-action: none;
         }
 
         /* メインコンテナ */
@@ -57,7 +61,7 @@
 
         /* フルスクリーンメニュー */
         #fullscreenMenu {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -112,6 +116,8 @@
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
+            overflow: hidden;
+            width: 100%;
         }
 
         .menu-section h3 {
@@ -276,17 +282,18 @@
             justify-content: center;
             align-items: center;
             min-height: 300px;
-            background: rgba(255, 255, 255, 0.02);
+            background: white;
             border-radius: 20px;
             margin: 20px 0;
             position: relative;
+            transition: background-color 0.2s ease;
         }
 
         .rhythm-indicator {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(204, 0, 0, 0.1) 100%);
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -302,8 +309,9 @@
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.8); }
-            100% { box-shadow: 0 0 0 50px rgba(255, 68, 68, 0); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .technique-display {
@@ -317,13 +325,13 @@
             font-size: 2.5rem;
             margin-top: 30px;
             font-weight: bold;
-            color: #ff4444;
+            color: #333;
         }
 
         .status-display {
             font-size: 1.2rem;
             margin-top: 15px;
-            color: #ccc;
+            color: #666;
         }
 
         .controls {
@@ -370,14 +378,16 @@
         }
 
         .sound-buttons {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
             margin: 15px 0;
         }
 
         .sound-btn {
-            padding: 15px 5px;
+            flex: 1;
+            min-width: 0;
+            padding: 10px 2px;
             background: #2a2a2a;
             border: 2px solid #444;
             border-radius: 8px;
@@ -388,6 +398,11 @@
             flex-direction: column;
             align-items: center;
             gap: 5px;
+            font-size: 0.75rem;
+        }
+
+        .sound-btn span {
+            display: block;
         }
 
         .sound-btn.active {
@@ -397,14 +412,14 @@
 
         .color-indicator {
             width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            margin-top: 5px;
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 3px;
         }
 
         .technique-row {
             display: grid;
-            grid-template-columns: 60px 1fr 80px;
+            grid-template-columns: 60px 1fr 60px;
             gap: 10px;
             align-items: center;
             padding: 10px;
@@ -419,6 +434,14 @@
             text-align: center;
             font-weight: bold;
             color: white;
+        }
+
+        .technique-label.gold {
+            color: black;
+        }
+
+        .technique-label.green {
+            color: black;
         }
 
         .shuffle-btn {
@@ -456,6 +479,24 @@
             .timer-display {
                 font-size: 2rem;
             }
+
+            .sound-btn {
+                padding: 8px 1px;
+                font-size: 0.7rem;
+            }
+
+            .color-indicator {
+                height: 3px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .sound-btn {
+                padding: 6px 0;
+                font-size: 0.65rem;
+                gap: 2px;
+                border-width: 1px;
+            }
         }
     </style>
 </head>
@@ -488,7 +529,32 @@
                 <p>
                     <strong>ランダムリズムによる神経可塑性の促進：</strong><br>
                     不規則なリズムパターンに反応することで、脳の運動野と小脳の協調性が向上します。
+                    予測不可能な刺激により、反応速度と運動制御の精度が改善されます。
                 </p>
+                
+                <h4>【音と色の対応】</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="display: flex; align-items: center; margin: 5px 0;">
+                        <span style="display: inline-block; width: 20px; height: 20px; background: #FF6B6B; margin-right: 10px; border-radius: 3px;"></span>
+                        音1：赤色 - ジャブ系
+                    </li>
+                    <li style="display: flex; align-items: center; margin: 5px 0;">
+                        <span style="display: inline-block; width: 20px; height: 20px; background: #FFD700; margin-right: 10px; border-radius: 3px;"></span>
+                        音2：金色 - ストレート系
+                    </li>
+                    <li style="display: flex; align-items: center; margin: 5px 0;">
+                        <span style="display: inline-block; width: 20px; height: 20px; background: #00FF00; margin-right: 10px; border-radius: 3px;"></span>
+                        音3：緑色 - フック系
+                    </li>
+                    <li style="display: flex; align-items: center; margin: 5px 0;">
+                        <span style="display: inline-block; width: 20px; height: 20px; background: #FFA07A; margin-right: 10px; border-radius: 3px;"></span>
+                        音4：橙色 - アッパー系
+                    </li>
+                    <li style="display: flex; align-items: center; margin: 5px 0;">
+                        <span style="display: inline-block; width: 20px; height: 20px; background: #9400D3; margin-right: 10px; border-radius: 3px;"></span>
+                        音5：紫色 - キック系
+                    </li>
+                </ul>
                 
                 <h4>【トレーニング方法】</h4>
                 <ul>
@@ -496,9 +562,22 @@
                     <li><strong>即応：</strong> 音と光に合わせてリアルタイムで技を出す</li>
                     <li><strong>記憶：</strong> シーケンスを暗記して完全再現</li>
                 </ul>
+                
+                <h4>【効果】</h4>
+                <ul>
+                    <li>反応速度の向上（20-30%改善）</li>
+                    <li>運動パターンの多様化</li>
+                    <li>集中力と持続力の強化</li>
+                    <li>左右バランスの改善</li>
+                </ul>
+                
+                <h4>【レベル別設定のコツ】</h4>
+                <p><strong>初心者：</strong> 音2種類、リズム3-5回、休憩10-15秒</p>
+                <p><strong>中級者：</strong> 音3種類、リズム5-7回、休憩5-10秒</p>
+                <p><strong>上級者：</strong> 音5種類、リズム7-10回、休憩3-5秒</p>
             </div>
 
-            <div class="training-display">
+            <div class="training-display" id="trainingDisplay">
                 <div class="rhythm-indicator" id="rhythmIndicator">
                     <span id="soundNumber"></span>
                     <div class="technique-display" id="techniqueDisplay"></div>
@@ -542,6 +621,19 @@
             </div>
 
             <div class="menu-section">
+                <h3>🎶 リズム間隔</h3>
+                <select class="menu-select" id="rhythmInterval">
+                    <option value="0.3-1.0" selected>標準（0.3-1.0秒）</option>
+                    <option value="0.5-1.0">安定（0.5-1.0秒）</option>
+                    <option value="0.7-1.3">中速（0.7-1.3秒）</option>
+                    <option value="0.5-1.5">変化大（0.5-1.5秒）</option>
+                    <option value="0.3-1.5">最大変化（0.3-1.5秒）</option>
+                    <option value="0.3-0.7">高速（0.3-0.7秒）</option>
+                    <option value="0.8-1.5">低速（0.8-1.5秒）</option>
+                </select>
+            </div>
+
+            <div class="menu-section">
                 <h3>⏸ 休憩時間</h3>
                 <select class="menu-select" id="restTime">
                     <option value="3-5">3-5秒（上級者）</option>
@@ -554,24 +646,24 @@
                 <h3>🎨 使用する音と色</h3>
                 <div class="sound-buttons">
                     <button class="sound-btn active" data-sound="1">
-                        音1
+                        <span>音1</span>
                         <div class="color-indicator" style="background: #FF6B6B;"></div>
                     </button>
                     <button class="sound-btn" data-sound="2">
-                        音2
-                        <div class="color-indicator" style="background: #4ECDC4;"></div>
+                        <span>音2</span>
+                        <div class="color-indicator" style="background: #FFD700;"></div>
                     </button>
                     <button class="sound-btn" data-sound="3">
-                        音3
-                        <div class="color-indicator" style="background: #45B7D1;"></div>
+                        <span>音3</span>
+                        <div class="color-indicator" style="background: #00FF00;"></div>
                     </button>
                     <button class="sound-btn" data-sound="4">
-                        音4
+                        <span>音4</span>
                         <div class="color-indicator" style="background: #FFA07A;"></div>
                     </button>
                     <button class="sound-btn" data-sound="5">
-                        音5
-                        <div class="color-indicator" style="background: #98D8C8;"></div>
+                        <span>音5</span>
+                        <div class="color-indicator" style="background: #9400D3;"></div>
                     </button>
                 </div>
             </div>
@@ -595,11 +687,10 @@
                     <select class="menu-select" id="side1">
                         <option value="左">左</option>
                         <option value="右">右</option>
-                        <option value="左右交互">左右交互</option>
                     </select>
                 </div>
                 <div class="technique-row">
-                    <div class="technique-label" style="background: #4ECDC4;">音2</div>
+                    <div class="technique-label gold" style="background: #FFD700;">音2</div>
                     <select class="menu-select" id="tech2">
                         <option value="ストレート">ストレート</option>
                         <option value="ジャブ">ジャブ</option>
@@ -615,11 +706,10 @@
                     <select class="menu-select" id="side2">
                         <option value="右">右</option>
                         <option value="左">左</option>
-                        <option value="左右交互">左右交互</option>
                     </select>
                 </div>
                 <div class="technique-row">
-                    <div class="technique-label" style="background: #45B7D1;">音3</div>
+                    <div class="technique-label green" style="background: #00FF00;">音3</div>
                     <select class="menu-select" id="tech3">
                         <option value="フック">フック</option>
                         <option value="ジャブ">ジャブ</option>
@@ -635,7 +725,6 @@
                     <select class="menu-select" id="side3">
                         <option value="左">左</option>
                         <option value="右">右</option>
-                        <option value="左右交互">左右交互</option>
                     </select>
                 </div>
                 <div class="technique-row">
@@ -655,11 +744,10 @@
                     <select class="menu-select" id="side4">
                         <option value="右">右</option>
                         <option value="左">左</option>
-                        <option value="左右交互">左右交互</option>
                     </select>
                 </div>
                 <div class="technique-row">
-                    <div class="technique-label" style="background: #98D8C8;">音5</div>
+                    <div class="technique-label" style="background: #9400D3;">音5</div>
                     <select class="menu-select" id="tech5">
                         <option value="ローキック">ローキック</option>
                         <option value="ミドルキック">ミドルキック</option>
@@ -675,7 +763,6 @@
                     <select class="menu-select" id="side5">
                         <option value="右">右</option>
                         <option value="左">左</option>
-                        <option value="左右交互">左右交互</option>
                     </select>
                 </div>
                 <button class="shuffle-btn" id="shuffleBtn">🎲 ランダムに割り当て（重複なし）</button>
@@ -702,13 +789,13 @@
         let rhythmSequence = [];
         let currentRhythmIndex = 0;
 
-        // Sound configuration
+        // Sound configuration - 修正された色
         const soundConfig = {
-            1: { freq: 440, color: '#FF6B6B' },
-            2: { freq: 523, color: '#4ECDC4' },
-            3: { freq: 659, color: '#45B7D1' },
-            4: { freq: 784, color: '#FFA07A' },
-            5: { freq: 880, color: '#98D8C8' }
+            1: { freq: 440, color: '#FF6B6B' },     // 赤
+            2: { freq: 523, color: '#FFD700' },     // 金
+            3: { freq: 659, color: '#00FF00' },     // 緑
+            4: { freq: 784, color: '#FFA07A' },     // 橙
+            5: { freq: 880, color: '#9400D3' }      // 紫
         };
 
         // Available techniques
@@ -717,7 +804,7 @@
             '前蹴り', '膝蹴り', 'ローキック', 'ミドルキック', 'ハイキック'
         ];
         
-        const sides = ['左', '右', '左右交互'];
+        const sides = ['左', '右'];
 
         // Initialize
         window.addEventListener('load', () => {
@@ -818,33 +905,23 @@
             document.getElementById('stopBtn').addEventListener('click', stopTraining);
         }
 
-        function getTechniqueText(soundType) {
-            const tech = document.getElementById(`tech${soundType}`).value;
-            const side = document.getElementById(`side${soundType}`).value;
-            
-            if (side === '左右交互') {
-                return tech;
-            } else {
-                return `${side}${tech}`;
-            }
-        }
-
         function playSound(soundType) {
             const config = soundConfig[soundType];
             const indicator = document.getElementById('rhythmIndicator');
-            const trainingDisplay = document.querySelector('.training-display');
+            const trainingDisplay = document.getElementById('trainingDisplay');
             
-            // 画面全体（トレーニングディスプレイ）の背景色を変更
-            trainingDisplay.style.backgroundColor = config.color + '40'; // 40は透明度
+            // 画面全体の背景色を変更
+            trainingDisplay.style.backgroundColor = config.color;
             
             // Visual feedback
-            indicator.style.background = 
-                `radial-gradient(circle, ${config.color} 0%, ${config.color}66 60%, ${config.color}33 100%)`;
-            indicator.style.boxShadow = `0 0 100px ${config.color}`;
             indicator.classList.add('active');
             
+            // 文字色を調整（明るい色の場合は黒、暗い色の場合は白）
+            const isLightColor = soundType === 2 || soundType === 3; // 金と緑
+            const textColor = isLightColor ? '#000' : '#fff';
+            
+            document.getElementById('soundNumber').style.color = textColor;
             document.getElementById('soundNumber').textContent = soundType;
-            // 技名は表示しない
             document.getElementById('techniqueDisplay').textContent = '';
             
             // Play sound
@@ -869,27 +946,50 @@
             setTimeout(() => {
                 indicator.classList.remove('active');
                 document.getElementById('soundNumber').textContent = '';
+                document.getElementById('soundNumber').style.color = '#333';
                 document.getElementById('techniqueDisplay').textContent = '';
-                indicator.style.background = 
-                    'radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(204, 0, 0, 0.1) 100%)';
-                indicator.style.boxShadow = 'none';
-                // 背景色を元に戻す
-                trainingDisplay.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+                trainingDisplay.style.backgroundColor = 'white';
             }, 200);
+        }
+
+        // Simple beep for countdown
+        function playBeep(frequency) {
+            if (!isMuted && audioContext) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            }
         }
 
         function generateRhythmSequence() {
             rhythmSequence = [];
             const count = parseInt(document.getElementById('rhythmCount').value);
+            const intervalRange = document.getElementById('rhythmInterval').value.split('-').map(Number);
+            const minInterval = intervalRange[0];
+            const maxInterval = intervalRange[1];
             
             for (let i = 0; i < count; i++) {
-                const interval = Math.random() * 0.7 + 0.3;
+                const interval = Math.random() * (maxInterval - minInterval) + minInterval;
                 const sound = activeSounds[Math.floor(Math.random() * activeSounds.length)];
                 rhythmSequence.push({ interval: interval * 1000, sound });
             }
         }
 
         function playRhythmSequence() {
+            if (!isTraining) return;
+            
             if (currentRhythmIndex >= rhythmSequence.length) {
                 startRestPhase();
                 return;
@@ -905,6 +1005,8 @@
         }
 
         function startRestPhase() {
+            if (!isTraining) return;
+            
             currentPhase = 'rest';
             document.getElementById('statusDisplay').textContent = '休憩中 - リズムを再現してください';
             
@@ -919,7 +1021,6 @@
         }
 
         function startRhythmPhase() {
-            // トレーニングが停止されていないか確認
             if (!isTraining) return;
             
             currentPhase = 'rhythm';
@@ -953,16 +1054,32 @@
                 countdown--;
                 if (countdown > 0) {
                     document.getElementById('statusDisplay').textContent = `開始まで ${countdown}...`;
-                    if (!isMuted) playSound(1);
+                    playBeep(440); // シンプルなビープ音のみ
                 } else {
                     clearInterval(countdownInterval);
-                    startMainTraining();
+                    document.getElementById('statusDisplay').textContent = 'スタート！';
+                    playBeep(880); // 高い音
+                    
+                    // 0.5秒待ってからメイントレーニング開始
+                    setTimeout(() => {
+                        if (isTraining) {
+                            startMainTraining();
+                        }
+                    }, 500);
                 }
             }, 1000);
         }
 
         function startMainTraining() {
+            if (!isTraining) return;
+            
             trainingTimer = setInterval(() => {
+                if (!isTraining) {
+                    clearInterval(trainingTimer);
+                    trainingTimer = null;
+                    return;
+                }
+                
                 remainingSeconds--;
                 updateTimerDisplay();
                 
@@ -976,8 +1093,10 @@
         }
 
         function stopTraining() {
+            // 即座にフラグを設定
             isTraining = false;
             
+            // すべてのタイマーを停止
             if (trainingTimer) {
                 clearInterval(trainingTimer);
                 trainingTimer = null;
@@ -987,12 +1106,27 @@
                 clearTimeout(rhythmTimer);
                 rhythmTimer = null;
             }
+            
+            // すべての可能なタイムアウトをクリア（念のため）
+            for (let i = 1; i < 99999; i++) {
+                clearTimeout(i);
+                clearInterval(i);
+            }
 
+            // UIをリセット
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
             document.getElementById('openMenuBtn').style.display = 'block';
             document.getElementById('statusDisplay').textContent = 'スタートを押して開始';
-            document.getElementById('timerDisplay').textContent = '0:00';
+            document.getElementById('timerDisplay').textContent = '';
+            document.getElementById('soundNumber').textContent = '';
+            document.getElementById('techniqueDisplay').textContent = '';
+            
+            // 背景色を白に戻す
+            document.getElementById('trainingDisplay').style.backgroundColor = 'white';
+            
+            // インジケーターをリセット
+            document.getElementById('rhythmIndicator').classList.remove('active');
         }
 
         function updateTimerDisplay() {
@@ -1002,9 +1136,13 @@
                 `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        // PWA
+        // PWA - Service Worker登録を修正
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered:', reg))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
         }
     </script>
 </body>
