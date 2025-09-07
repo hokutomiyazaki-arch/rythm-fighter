@@ -301,6 +301,7 @@
             font-size: 3rem;
             font-weight: bold;
             transition: all 0.1s ease;
+            position: relative;
         }
 
         .rhythm-indicator.active {
@@ -419,7 +420,7 @@
 
         .technique-row {
             display: grid;
-            grid-template-columns: 60px 1fr 60px;
+            grid-template-columns: 60px 1fr 80px;
             gap: 10px;
             align-items: center;
             padding: 10px;
@@ -532,28 +533,51 @@
                     予測不可能な刺激により、反応速度と運動制御の精度が改善されます。
                 </p>
                 
-                <h4>【音と色の対応】</h4>
+                <h4>【音と色の対応】※技の割り当ては自由にカスタマイズ可能です</h4>
                 <ul style="list-style: none; padding: 0;">
                     <li style="display: flex; align-items: center; margin: 5px 0;">
                         <span style="display: inline-block; width: 20px; height: 20px; background: #FF6B6B; margin-right: 10px; border-radius: 3px;"></span>
-                        音1：赤色 - ジャブ系
+                        音1：赤色
                     </li>
                     <li style="display: flex; align-items: center; margin: 5px 0;">
                         <span style="display: inline-block; width: 20px; height: 20px; background: #FFD700; margin-right: 10px; border-radius: 3px;"></span>
-                        音2：金色 - ストレート系
+                        音2：金色
                     </li>
                     <li style="display: flex; align-items: center; margin: 5px 0;">
                         <span style="display: inline-block; width: 20px; height: 20px; background: #00FF00; margin-right: 10px; border-radius: 3px;"></span>
-                        音3：緑色 - フック系
+                        音3：緑色
                     </li>
                     <li style="display: flex; align-items: center; margin: 5px 0;">
                         <span style="display: inline-block; width: 20px; height: 20px; background: #FFA07A; margin-right: 10px; border-radius: 3px;"></span>
-                        音4：橙色 - アッパー系
+                        音4：橙色
                     </li>
                     <li style="display: flex; align-items: center; margin: 5px 0;">
                         <span style="display: inline-block; width: 20px; height: 20px; background: #9400D3; margin-right: 10px; border-radius: 3px;"></span>
-                        音5：紫色 - キック系
+                        音5：紫色
                     </li>
+                </ul>
+                
+                <h4>【トレーニングバリエーション例】</h4>
+                <p><strong>初心者向け（2色使用）：</strong></p>
+                <ul>
+                    <li>赤＝パンチ（何でもOK）、金＝キック（何でもOK）</li>
+                    <li>赤＝左攻撃、金＝右攻撃</li>
+                    <li>赤＝前進、金＝後退</li>
+                    <li>赤＝左に避ける、金＝右に避ける</li>
+                </ul>
+                
+                <p><strong>中級者向け（3-4色使用）：</strong></p>
+                <ul>
+                    <li>赤＝ジャブ、金＝ストレート、緑＝フック、橙＝キック</li>
+                    <li>赤＝左パンチ、金＝右パンチ、緑＝左キック、橙＝右キック</li>
+                    <li>赤＝前進攻撃、金＝後退防御、緑＝左回避、橙＝右回避</li>
+                </ul>
+                
+                <p><strong>上級者向け（5色フル活用）：</strong></p>
+                <ul>
+                    <li>各色に具体的な技を割り当て（ジャブ、ストレート、フック、アッパー、キック等）</li>
+                    <li>コンビネーション練習（特定の色の組み合わせで連続技）</li>
+                    <li>攻撃と防御の混合（パンチ、キック、ブロック、回避を組み合わせ）</li>
                 </ul>
                 
                 <h4>【トレーニング方法】</h4>
@@ -572,9 +596,17 @@
                 </ul>
                 
                 <h4>【レベル別設定のコツ】</h4>
-                <p><strong>初心者：</strong> 音2種類、リズム3-5回、休憩10-15秒</p>
-                <p><strong>中級者：</strong> 音3種類、リズム5-7回、休憩5-10秒</p>
-                <p><strong>上級者：</strong> 音5種類、リズム7-10回、休憩3-5秒</p>
+                <p><strong>初心者：</strong> 音2種類、リズム3-5回、休憩10-15秒、リズム間隔「低速」</p>
+                <p><strong>中級者：</strong> 音3種類、リズム5-7回、休憩5-10秒、リズム間隔「標準」</p>
+                <p><strong>上級者：</strong> 音5種類、リズム7-10回、休憩3-5秒、リズム間隔「最大変化」</p>
+                
+                <h4>【ポイント】</h4>
+                <ul>
+                    <li>最初はシンプルに2色から始めることを推奨</li>
+                    <li>技の割り当ては自由にカスタマイズ可能</li>
+                    <li>攻撃だけでなく、防御や回避動作も設定できます</li>
+                    <li>慣れてきたら色数を増やして複雑なパターンに挑戦</li>
+                </ul>
             </div>
 
             <div class="training-display" id="trainingDisplay">
@@ -685,8 +717,9 @@
                         <option value="ハイキック">ハイキック</option>
                     </select>
                     <select class="menu-select" id="side1">
-                        <option value="左">左</option>
-                        <option value="右">右</option>
+                        <option value="">✓設定なし</option>
+                        <option value="左">←左</option>
+                        <option value="右">→右</option>
                     </select>
                 </div>
                 <div class="technique-row">
@@ -704,8 +737,9 @@
                         <option value="ハイキック">ハイキック</option>
                     </select>
                     <select class="menu-select" id="side2">
-                        <option value="右">右</option>
-                        <option value="左">左</option>
+                        <option value="">✓設定なし</option>
+                        <option value="左">←左</option>
+                        <option value="右">→右</option>
                     </select>
                 </div>
                 <div class="technique-row">
@@ -723,8 +757,9 @@
                         <option value="ハイキック">ハイキック</option>
                     </select>
                     <select class="menu-select" id="side3">
-                        <option value="左">左</option>
-                        <option value="右">右</option>
+                        <option value="">✓設定なし</option>
+                        <option value="左">←左</option>
+                        <option value="右">→右</option>
                     </select>
                 </div>
                 <div class="technique-row">
@@ -742,8 +777,9 @@
                         <option value="ハイキック">ハイキック</option>
                     </select>
                     <select class="menu-select" id="side4">
-                        <option value="右">右</option>
-                        <option value="左">左</option>
+                        <option value="">✓設定なし</option>
+                        <option value="左">←左</option>
+                        <option value="右">→右</option>
                     </select>
                 </div>
                 <div class="technique-row">
@@ -761,8 +797,9 @@
                         <option value="裏拳">裏拳</option>
                     </select>
                     <select class="menu-select" id="side5">
-                        <option value="右">右</option>
-                        <option value="左">左</option>
+                        <option value="">✓設定なし</option>
+                        <option value="左">←左</option>
+                        <option value="右">→右</option>
                     </select>
                 </div>
                 <button class="shuffle-btn" id="shuffleBtn">🎲 ランダムに割り当て（重複なし）</button>
@@ -804,7 +841,7 @@
             '前蹴り', '膝蹴り', 'ローキック', 'ミドルキック', 'ハイキック'
         ];
         
-        const sides = ['左', '右'];
+        const sides = ['', '左', '右'];
 
         // Initialize
         window.addEventListener('load', () => {
@@ -920,9 +957,36 @@
             const isLightColor = soundType === 2 || soundType === 3; // 金と緑
             const textColor = isLightColor ? '#000' : '#fff';
             
-            document.getElementById('soundNumber').style.color = textColor;
-            document.getElementById('soundNumber').textContent = soundType;
-            document.getElementById('techniqueDisplay').textContent = '';
+            // 既存の要素をクリア（前の表示を完全に削除）
+            indicator.innerHTML = '';
+            
+            // 数字と矢印を横並びで表示（画面いっぱいのサイズ）
+            const side = document.getElementById(`side${soundType}`).value;
+            const displayContainer = document.createElement('div');
+            displayContainer.className = 'display-container';
+            displayContainer.style.cssText = `
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 30px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 8rem;
+                color: ${textColor};
+                font-weight: bold;
+            `;
+            
+            if (side === '左') {
+                displayContainer.innerHTML = `<span>←</span><span>${soundType}</span>`;
+            } else if (side === '右') {
+                displayContainer.innerHTML = `<span>${soundType}</span><span>→</span>`;
+            } else {
+                displayContainer.innerHTML = `<span>${soundType}</span>`;
+            }
+            
+            indicator.appendChild(displayContainer);
             
             // Play sound
             if (!isMuted && audioContext) {
@@ -945,9 +1009,10 @@
             
             setTimeout(() => {
                 indicator.classList.remove('active');
-                document.getElementById('soundNumber').textContent = '';
-                document.getElementById('soundNumber').style.color = '#333';
-                document.getElementById('techniqueDisplay').textContent = '';
+                // indicatorの中身を完全にクリア
+                indicator.innerHTML = '';
+                // spanタグを再追加（元の構造を維持）
+                indicator.innerHTML = '<span id="soundNumber"></span><div class="technique-display" id="techniqueDisplay"></div>';
                 trainingDisplay.style.backgroundColor = 'white';
             }, 200);
         }
