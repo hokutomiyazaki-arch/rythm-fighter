@@ -957,13 +957,33 @@
             const isLightColor = soundType === 2 || soundType === 3; // 金と緑
             const textColor = isLightColor ? '#000' : '#fff';
             
-            // 既存の要素をクリア（前の表示を完全に削除）
-            indicator.innerHTML = '';
+            // 既存の要素を取得して更新
+            let soundNumberEl = document.getElementById('soundNumber');
+            let techniqueDisplayEl = document.getElementById('techniqueDisplay');
             
-            // 数字と矢印を横並びで表示（画面いっぱいのサイズ）
+            // 要素が存在しない場合は作成
+            if (!soundNumberEl) {
+                soundNumberEl = document.createElement('span');
+                soundNumberEl.id = 'soundNumber';
+                indicator.appendChild(soundNumberEl);
+            }
+            if (!techniqueDisplayEl) {
+                techniqueDisplayEl = document.createElement('div');
+                techniqueDisplayEl.className = 'technique-display';
+                techniqueDisplayEl.id = 'techniqueDisplay';
+                indicator.appendChild(techniqueDisplayEl);
+            }
+            
+            // 既存の矢印表示があれば削除
+            const existingDisplay = indicator.querySelector('.temp-display');
+            if (existingDisplay) {
+                existingDisplay.remove();
+            }
+            
+            // 数字と矢印を表示
             const side = document.getElementById(`side${soundType}`).value;
             const displayContainer = document.createElement('div');
-            displayContainer.className = 'display-container';
+            displayContainer.className = 'temp-display';
             displayContainer.style.cssText = `
                 display: flex;
                 align-items: center;
@@ -979,40 +999,57 @@
             `;
             
             if (side === '左') {
-                displayContainer.innerHTML = `<span>←</span><span>${soundType}</span>`;
+                const arrow = document.createElement('span');
+                arrow.textContent = '←';
+                const num = document.createElement('span');
+                num.textContent = soundType;
+                displayContainer.appendChild(arrow);
+                displayContainer.appendChild(num);
             } else if (side === '右') {
-                displayContainer.innerHTML = `<span>${soundType}</span><span>→</span>`;
+                const num = document.createElement('span');
+                num.textContent = soundType;
+                const arrow = document.createElement('span');
+                arrow.textContent = '→';
+                displayContainer.appendChild(num);
+                displayContainer.appendChild(arrow);
             } else {
-                displayContainer.innerHTML = `<span>${soundType}</span>`;
+                const num = document.createElement('span');
+                num.textContent = soundType;
+                displayContainer.appendChild(num);
             }
             
             indicator.appendChild(displayContainer);
             
             // Play sound
             if (!isMuted && audioContext) {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.value = config.freq;
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.3);
+                try {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = config.freq;
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                } catch (e) {
+                    console.log('Audio error:', e);
+                }
             }
             
             setTimeout(() => {
                 indicator.classList.remove('active');
-                // indicatorの中身を完全にクリア
-                indicator.innerHTML = '';
-                // spanタグを再追加（元の構造を維持）
-                indicator.innerHTML = '<span id="soundNumber"></span><div class="technique-display" id="techniqueDisplay"></div>';
+                // temp-displayクラスの要素だけを削除
+                const tempDisplay = indicator.querySelector('.temp-display');
+                if (tempDisplay) {
+                    tempDisplay.remove();
+                }
                 trainingDisplay.style.backgroundColor = 'white';
             }, 200);
         }
