@@ -1,10 +1,8 @@
-const CACHE_NAME = 'rhythm-fighter-v1.0.0';
+const CACHE_NAME = 'rhythm-fighter-v1.1.0';
 const urlsToCache = [
   './',
-  './index.html',
-  './manifest.json',
-  './FNT512.png',
-  './FNT512-transparent.png'
+  './index.html', 
+  './manifest.json'
 ];
 
 // インストール時にキャッシュ
@@ -16,6 +14,9 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
       .then(() => self.skipWaiting())
+      .catch(err => {
+        console.error('Cache install failed:', err);
+      })
   );
 });
 
@@ -25,6 +26,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
+          // 古いキャッシュをすべて削除
           if (cacheName !== CACHE_NAME) {
             console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
@@ -37,26 +39,32 @@ self.addEventListener('activate', event => {
 
 // フェッチ時の処理
 self.addEventListener('fetch', event => {
+  // 外部URLはキャッシュしない
+  if (!event.request.url.startsWith(self.location.origin)) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // キャッシュがあればそれを返す
         if (response) {
           return response;
         }
-
-        // なければネットワークから取得
+        
         return fetch(event.request).then(response => {
-          // 有効なレスポンスでない場合はそのまま返す
+          // 404エラーや異常なレスポンスはキャッシュしない
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
 
-          // レスポンスをクローンしてキャッシュに保存
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then(cache => {
               cache.put(event.request, responseToCache);
+            })
+            .catch(err => {
+              console.error('Cache put failed:', err);
             });
 
           return response;
@@ -64,41 +72,9 @@ self.addEventListener('fetch', event => {
       })
       .catch(() => {
         // オフライン時のフォールバック
-        return caches.match('./index.html');
+        if (event.request.destination === 'document') {
+          return caches.match('./index.html');
+        }
       })
   );
-});
-
-// バックグラウンド同期
-self.addEventListener('sync', event => {
-  if (event.tag === 'update-check') {
-    event.waitUntil(checkForUpdates());
-  }
-});
-
-// アップデートチェック
-async function checkForUpdates() {
-  try {
-    const response = await fetch('./manifest.json');
-    const manifest = await response.json();
-    
-    // バージョンチェックロジックをここに実装
-    // 新しいバージョンがあれば通知
-    if (manifest.version && manifest.version !== CACHE_NAME) {
-      self.registration.showNotification('アップデート利用可能', {
-        body: '新しいバージョンが利用可能です。',
-        icon: 'https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512.png',
-        badge: 'https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512.png'
-      });
-    }
-  } catch (error) {
-    console.error('Update check failed:', error);
-  }
-}
-
-// メッセージリスナー
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
 });
