@@ -5,7 +5,43 @@
   "start_url": "./index.html",
   "display": "fullscreen",
   "orientation": "portrait",
+  "background_color": "#1a1a1a",{
+  "name": "Rhythm Fighter - キックボクシング リズムトレーニング",
+  "short_name": "Rhythm Fighter",
+  "description": "ランダムリズムで反応力を鍛えるキックボクシングトレーニングアプリ",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
   "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "FNT512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "FNT512.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["sports", "health", "fitness"],
+  "lang": "ja",
+  "dir": "ltr",
+  "scope": "./",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "トレーニング開始",
+      "short_name": "開始",
+      "description": "すぐにトレーニングを始める",
+      "url": "./index.html?start=true",
+      "icons": [{ "src": "https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512.png", "sizes": "96x96" }]
+    }
+  ]
+}
   "theme_color": "#1a1a1a",
   "icons": [
     {
