@@ -29,27 +29,128 @@
             user-select: none;
         }
 
-        html, body {
+        html {
             width: 100%;
             height: 100%;
             overflow: hidden;
-            position: fixed;
-            overscroll-behavior: none;
         }
 
         body {
+            width: 100%;
+            height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            touch-action: pan-y;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* メインコンテナ */
+        .main-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* フルスクリーンメニュー */
+        #fullscreenMenu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #fullscreenMenu.active {
+            transform: translateX(0);
+        }
+
+        .menu-header {
+            position: sticky;
+            top: 0;
+            background: #1a1a1a;
+            padding: 20px;
+            border-bottom: 2px solid #ff4444;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-title {
+            font-size: 1.5rem;
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .close-menu-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .menu-content {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .menu-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .menu-section h3 {
+            color: #ff4444;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .menu-select, .menu-input {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* メニューを開くボタン */
+        .open-menu-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: #ff4444;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* スプラッシュスクリーン */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -61,7 +162,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            z-index: 20000;
             transition: opacity 0.5s ease;
         }
 
@@ -104,13 +205,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto;
             padding: 10px;
             overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
         }
 
         .header {
@@ -163,38 +259,6 @@
             margin-bottom: 8px;
         }
 
-        .description ul {
-            margin-left: 20px;
-            margin-bottom: 10px;
-        }
-
-        .description li {
-            margin-bottom: 5px;
-        }
-
-        .color-legend {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-        }
-
-        .color-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .color-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
         .toggle-info {
             background: rgba(255, 68, 68, 0.2);
             color: #ff4444;
@@ -207,185 +271,6 @@
             align-self: center;
         }
 
-        .menu-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: rgba(255, 68, 68, 0.9);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-toggle.active {
-            background: rgba(76, 175, 80, 0.9);
-        }
-
-        .settings-panel {
-            background: rgba(30, 30, 30, 0.98);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            transform: translateY(-20px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            display: none;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .settings-panel.show {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .setting-group {
-            margin-bottom: 20px;
-        }
-
-        .setting-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #ff4444;
-            font-weight: 600;
-        }
-
-        select, input[type="range"] {
-            width: 100%;
-            padding: 10px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .range-value {
-            text-align: center;
-            color: #ff4444;
-            font-size: 1.2rem;
-            margin-top: 5px;
-        }
-
-        .sound-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .sound-btn {
-            padding: 15px 10px;
-            background: #2a2a2a;
-            border: 2px solid #444;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .sound-btn .color-indicator {
-            width: 100%;
-            height: 4px;
-            border-radius: 2px;
-            margin-top: 5px;
-        }
-
-        .sound-btn.active {
-            border-color: #fff;
-            background: #3a3a3a;
-        }
-
-        .technique-assignment {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-
-        .technique-grid {
-            display: grid;
-            gap: 10px;
-        }
-
-        .technique-row {
-            display: grid;
-            grid-template-columns: 50px 1fr 1fr;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .technique-label {
-            background: #2a2a2a;
-            padding: 8px;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .technique-select {
-            padding: 8px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: white;
-            font-size: 0.9rem;
-        }
-
-        .shuffle-btn {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #9333ea 0%, #6b21a8 100%);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-        }
-
-        .mute-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-
-        .mute-btn {
-            padding: 8px 15px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .mute-btn.active {
-            background: #ff4444;
-            border-color: #ff4444;
-        }
-
         .training-display {
             flex: 1;
             display: flex;
@@ -393,40 +278,29 @@
             justify-content: center;
             align-items: center;
             min-height: 300px;
-            background: rgba(255, 255, 255, 0.02);
+            background: white;
             border-radius: 20px;
             margin: 20px 0;
             position: relative;
-            overflow: hidden;
+            transition: background-color 0.3s ease;
         }
 
         .rhythm-indicator {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(204, 0, 0, 0.1) 100%);
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             font-size: 3rem;
             font-weight: bold;
             transition: all 0.1s ease;
-            box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
-            flex-direction: column;
         }
 
         .rhythm-indicator.active {
             transform: scale(1.2);
-            animation: pulse 0.3s ease-out;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.8);
-            }
-            100% {
-                box-shadow: 0 0 0 50px rgba(255, 68, 68, 0);
-            }
         }
 
         .technique-display {
@@ -440,13 +314,13 @@
             font-size: 2.5rem;
             margin-top: 30px;
             font-weight: bold;
-            color: #ff4444;
+            color: #333;
         }
 
         .status-display {
             font-size: 1.2rem;
             margin-top: 15px;
-            color: #ccc;
+            color: #666;
         }
 
         .controls {
@@ -492,736 +366,17 @@
             background: rgba(0, 0, 0, 0.3);
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 1.3rem;
-            }
-            
-            .rhythm-indicator {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .timer-display {
-                font-size: 2rem;
-            }
-            
-            button {
-                padding: 12px 20px;
-                font-size: 1rem;
-            }
-            
-            .technique-row {
-                grid-template-columns: 50px 1fr 1fr;
-                gap: 8px;
-                padding: 8px;
-            }
-            
-            .technique-select {
-                font-size: 0.85rem;
-                padding: 8px;
-            }
-            
-            .settings-panel {
-                padding: 80px 15px 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- スプラッシュスクリーン -->
-    <div class="splash-screen" id="splashScreen">
-        <img src="https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512.png" alt="FNT" class="splash-logo">
-        <div class="splash-title">Functional Neuro Training</div>
-        <div class="splash-subtitle">Rhythm Fighter</div>
-        <div class="splash-copyright">© Functional Neuro Training</div>
-    </div>
-
-    <!-- メニュートグルボタン -->
-    <button class="menu-toggle" id="menuToggle">☰</button>
-
-    <div class="container">
-        <div class="header">
-            <img src="https://hokutomiyazaki-arch.github.io/rythm-fighter/FNT512-transparent.png" alt="FNT" class="logo">
-            <h1>Rhythm Fighter</h1>
-        </div>
-
-        <button class="toggle-info" id="toggleInfo">トレーニング方法を表示</button>
-        
-        <div class="description" id="description">
-            <h3>🥊 神経科学的トレーニング方法</h3>
-            
-            <h4>【トレーニングの仕組み】</h4>
-            <p>
-                <strong>ランダムリズムによる神経可塑性の促進：</strong><br>
-                不規則なリズムパターンに反応することで、脳の運動野と小脳の協調性が向上します。
-                予測不可能な刺激により、神経回路の再編成が促進され、反応速度と適応力が改善されます。
-            </p>
-            
-            <h4>【音と色の対応（例）】</h4>
-            <div class="color-legend">
-                <div class="color-item">
-                    <div class="color-dot" style="background: #FF6B6B;"></div>
-                    <span>音1: 赤</span>
-                </div>
-                <div class="color-item">
-                    <div class="color-dot" style="background: #4ECDC4;"></div>
-                    <span>音2: 青</span>
-                </div>
-                <div class="color-item">
-                    <div class="color-dot" style="background: #45B7D1;"></div>
-                    <span>音3: 水色</span>
-                </div>
-                <div class="color-item">
-                    <div class="color-dot" style="background: #FFA07A;"></div>
-                    <span>音4: 橙</span>
-                </div>
-                <div class="color-item">
-                    <div class="color-dot" style="background: #98D8C8;"></div>
-                    <span>音5: 緑</span>
-                </div>
-            </div>
-            <p style="margin-top: 10px; font-size: 0.85rem; color: #999;">
-                ※ 下のメニューで各音に技と左右を自由に割り当てできます
-            </p>
-            
-            <h4>【トレーニング方法】</h4>
-            <ul>
-                <li><strong>基本トレーニング：</strong> リズムが鳴っている間、よく聞いて見て覚える → 休憩時間にそのリズムを再現</li>
-                <li><strong>即応トレーニング：</strong> 音と光に合わせてリアルタイムで技を出す</li>
-                <li><strong>記憶トレーニング：</strong> 一連のシーケンスを暗記して、休憩時に完全再現</li>
-            </ul>
-            
-            <h4>【効果】</h4>
-            <ul>
-                <li><strong>ハンドアイコーディネーション：</strong> 視覚と運動の協調性向上</li>
-                <li><strong>ワーキングメモリー：</strong> 短期記憶と実行機能の強化</li>
-                <li><strong>反応速度：</strong> 刺激に対する即座の反応能力向上</li>
-                <li><strong>リズム感覚：</strong> タイミングと間合いの感覚養成</li>
-            </ul>
-            
-            <h4>【設定のコツ】</h4>
-            <ul>
-                <li>初心者: 3-5回のリズム、長めの休憩（10-15秒）</li>
-                <li>中級者: 5-7回のリズム、中程度の休憩（5-10秒）</li>
-                <li>上級者: 7-10回のリズム、短い休憩（3-5秒）</li>
-            </ul>
-        </div>
-
-        <div class="settings-panel" id="settingsPanel">
-            <div class="setting-group">
-                <label>トレーニング時間</label>
-                <select id="trainingTime">
-                    <option value="3">3分</option>
-                    <option value="5" selected>5分</option>
-                    <option value="7">7分</option>
-                    <option value="10">10分</option>
-                </select>
-            </div>
-
-            <div class="setting-group">
-                <label>リズム回数: <span id="rhythmCountValue">5</span>回</label>
-                <input type="range" id="rhythmCount" min="3" max="10" value="5">
-            </div>
-
-            <div class="setting-group">
-                <label>休憩時間</label>
-                <select id="restTime">
-                    <option value="3-5">3-5秒</option>
-                    <option value="5-10" selected>5-10秒</option>
-                    <option value="10-15">10-15秒</option>
-                </select>
-            </div>
-
-            <div class="setting-group">
-                <label>使用する音と色</label>
-                <div class="sound-buttons">
-                    <button class="sound-btn active" data-sound="1">
-                        音1
-                        <div class="color-indicator" style="background: #FF6B6B;"></div>
-                    </button>
-                    <button class="sound-btn" data-sound="2">
-                        音2
-                        <div class="color-indicator" style="background: #4ECDC4;"></div>
-                    </button>
-                    <button class="sound-btn" data-sound="3">
-                        音3
-                        <div class="color-indicator" style="background: #45B7D1;"></div>
-                    </button>
-                    <button class="sound-btn" data-sound="4">
-                        音4
-                        <div class="color-indicator" style="background: #FFA07A;"></div>
-                    </button>
-                    <button class="sound-btn" data-sound="5">
-                        音5
-                        <div class="color-indicator" style="background: #98D8C8;"></div>
-                    </button>
-                </div>
-                
-                <div class="technique-assignment">
-                    <label style="color: #ffaa44; margin-bottom: 10px; display: block;">技の割り当て</label>
-                    <div class="technique-grid">
-                        <div class="technique-row">
-                            <div class="technique-label" style="background: #FF6B6B; color: white;">音1</div>
-                            <select class="technique-select" id="tech1">
-                                <option value="ジャブ">ジャブ</option>
-                                <option value="ストレート">ストレート</option>
-                                <option value="フック">フック</option>
-                                <option value="アッパー">アッパー</option>
-                                <option value="裏拳">裏拳</option>
-                                <option value="前蹴り">前蹴り</option>
-                                <option value="膝蹴り">膝蹴り</option>
-                                <option value="ローキック">ローキック</option>
-                                <option value="ミドルキック">ミドルキック</option>
-                                <option value="ハイキック">ハイキック</option>
-                            </select>
-                            <select class="technique-select" id="side1">
-                                <option value="左">左</option>
-                                <option value="右">右</option>
-                                <option value="両方">両方</option>
-                            </select>
-                        </div>
-                        <div class="technique-row">
-                            <div class="technique-label" style="background: #4ECDC4; color: white;">音2</div>
-                            <select class="technique-select" id="tech2">
-                                <option value="ストレート">ストレート</option>
-                                <option value="ジャブ">ジャブ</option>
-                                <option value="フック">フック</option>
-                                <option value="アッパー">アッパー</option>
-                                <option value="裏拳">裏拳</option>
-                                <option value="前蹴り">前蹴り</option>
-                                <option value="膝蹴り">膝蹴り</option>
-                                <option value="ローキック">ローキック</option>
-                                <option value="ミドルキック">ミドルキック</option>
-                                <option value="ハイキック">ハイキック</option>
-                            </select>
-                            <select class="technique-select" id="side2">
-                                <option value="右">右</option>
-                                <option value="左">左</option>
-                                <option value="両方">両方</option>
-                            </select>
-                        </div>
-                        <div class="technique-row">
-                            <div class="technique-label" style="background: #45B7D1; color: white;">音3</div>
-                            <select class="technique-select" id="tech3">
-                                <option value="フック">フック</option>
-                                <option value="ジャブ">ジャブ</option>
-                                <option value="ストレート">ストレート</option>
-                                <option value="アッパー">アッパー</option>
-                                <option value="裏拳">裏拳</option>
-                                <option value="前蹴り">前蹴り</option>
-                                <option value="膝蹴り">膝蹴り</option>
-                                <option value="ローキック">ローキック</option>
-                                <option value="ミドルキック">ミドルキック</option>
-                                <option value="ハイキック">ハイキック</option>
-                            </select>
-                            <select class="technique-select" id="side3">
-                                <option value="左">左</option>
-                                <option value="右">右</option>
-                                <option value="両方">両方</option>
-                            </select>
-                        </div>
-                        <div class="technique-row">
-                            <div class="technique-label" style="background: #FFA07A; color: white;">音4</div>
-                            <select class="technique-select" id="tech4">
-                                <option value="アッパー">アッパー</option>
-                                <option value="ジャブ">ジャブ</option>
-                                <option value="ストレート">ストレート</option>
-                                <option value="フック">フック</option>
-                                <option value="裏拳">裏拳</option>
-                                <option value="前蹴り">前蹴り</option>
-                                <option value="膝蹴り">膝蹴り</option>
-                                <option value="ローキック">ローキック</option>
-                                <option value="ミドルキック">ミドルキック</option>
-                                <option value="ハイキック">ハイキック</option>
-                            </select>
-                            <select class="technique-select" id="side4">
-                                <option value="右">右</option>
-                                <option value="左">左</option>
-                                <option value="両方">両方</option>
-                            </select>
-                        </div>
-                        <div class="technique-row">
-                            <div class="technique-label" style="background: #98D8C8; color: white;">音5</div>
-                            <select class="technique-select" id="tech5">
-                                <option value="ローキック">ローキック</option>
-                                <option value="ミドルキック">ミドルキック</option>
-                                <option value="ハイキック">ハイキック</option>
-                                <option value="前蹴り">前蹴り</option>
-                                <option value="膝蹴り">膝蹴り</option>
-                                <option value="ジャブ">ジャブ</option>
-                                <option value="ストレート">ストレート</option>
-                                <option value="フック">フック</option>
-                                <option value="アッパー">アッパー</option>
-                                <option value="裏拳">裏拳</option>
-                            </select>
-                            <select class="technique-select" id="side5">
-                                <option value="右">右</option>
-                                <option value="左">左</option>
-                                <option value="両方">両方</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="shuffle-btn" id="shuffleBtn">🎲 ランダムに割り当て</button>
-                </div>
-            </div>
-
-            <div class="setting-group">
-                <div class="mute-control">
-                    <label style="margin-bottom: 0;">サウンド設定</label>
-                    <button class="mute-btn" id="muteBtn">音をOFF</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="training-display">
-            <div class="rhythm-indicator" id="rhythmIndicator">
-                <span id="soundNumber"></span>
-                <div class="technique-display" id="techniqueDisplay"></div>
-            </div>
-            <div class="timer-display" id="timerDisplay">0:00</div>
-            <div class="status-display" id="statusDisplay">スタートを押して開始</div>
-        </div>
-
-        <div class="controls">
-            <button class="start-btn" id="startBtn">スタート</button>
-            <button class="stop-btn" id="stopBtn" disabled>ストップ</button>
-        </div>
-    </div>
-
-    <div class="copyright">
-        © Functional Neuro Training - All Rights Reserved
-    </div>
-
-    <script>
-        // Audio context and training state
-        let audioContext = null;
-        let isTraining = false;
-        let isMuted = false;
-        let trainingTimer = null;
-        let rhythmTimer = null;
-        let totalSeconds = 0;
-        let remainingSeconds = 0;
-        let currentPhase = 'ready'; // ready, rhythm, rest
-        let activeSounds = [1]; // Default to sound 1
-        let rhythmSequence = [];
-        let currentRhythmIndex = 0;
-
-        // Sound frequencies and colors
-        const soundConfig = {
-            1: { freq: 440, color: '#FF6B6B', name: '赤' },     // A4 - Red
-            2: { freq: 523, color: '#4ECDC4', name: '青' },     // C5 - Blue
-            3: { freq: 659, color: '#45B7D1', name: '水色' },   // E5 - Light Blue
-            4: { freq: 784, color: '#FFA07A', name: '橙' },     // G5 - Orange
-            5: { freq: 880, color: '#98D8C8', name: '緑' }      // A5 - Green
-        };
-
-        // Available techniques
-        const techniques = [
-            'ジャブ', 'ストレート', 'フック', 'アッパー', '裏拳',
-            '前蹴り', '膝蹴り', 'ローキック', 'ミドルキック', 'ハイキック'
-        ];
-        
-        const sides = ['左', '右', '両方'];
-
-        // DOM elements
-        const elements = {
-            splashScreen: document.getElementById('splashScreen'),
-            menuToggle: document.getElementById('menuToggle'),
-            settingsPanel: document.getElementById('settingsPanel'),
-            toggleInfo: document.getElementById('toggleInfo'),
-            description: document.getElementById('description'),
-            startBtn: document.getElementById('startBtn'),
-            stopBtn: document.getElementById('stopBtn'),
-            rhythmIndicator: document.getElementById('rhythmIndicator'),
-            soundNumber: document.getElementById('soundNumber'),
-            techniqueDisplay: document.getElementById('techniqueDisplay'),
-            timerDisplay: document.getElementById('timerDisplay'),
-            statusDisplay: document.getElementById('statusDisplay'),
-            trainingTime: document.getElementById('trainingTime'),
-            rhythmCount: document.getElementById('rhythmCount'),
-            rhythmCountValue: document.getElementById('rhythmCountValue'),
-            restTime: document.getElementById('restTime'),
-            muteBtn: document.getElementById('muteBtn'),
-            shuffleBtn: document.getElementById('shuffleBtn')
-        };
-
-        // Initialize
-        window.addEventListener('load', () => {
-            // Hide splash screen
-            setTimeout(() => {
-                elements.splashScreen.classList.add('hide');
-            }, 2000);
-
-            // Initialize audio context
-            initAudio();
-
-            // Setup event listeners
-            setupEventListeners();
-
-            // Prevent scroll
-            document.body.addEventListener('touchmove', (e) => {
-                if (e.target.closest('.container')) return;
-                e.preventDefault();
-            }, { passive: false });
-
-            // Hide address bar
-            window.scrollTo(0, 1);
-        });
-
-        function initAudio() {
-            // Initialize on first user interaction
-            document.addEventListener('click', () => {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-            }, { once: true });
+        .sound-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            margin: 15px 0;
+            width: 100%;
         }
 
-        function setupEventListeners() {
-            // Menu toggle
-            elements.menuToggle.addEventListener('click', () => {
-                const isActive = elements.settingsPanel.classList.contains('show');
-                if (isActive) {
-                    elements.settingsPanel.classList.remove('show');
-                    elements.menuToggle.classList.remove('active');
-                    elements.menuToggle.innerHTML = '☰';
-                } else {
-                    elements.settingsPanel.classList.add('show');
-                    elements.menuToggle.classList.add('active');
-                    elements.menuToggle.innerHTML = '✕';
-                }
-            });
-
-            // Info toggle
-            elements.toggleInfo.addEventListener('click', () => {
-                elements.description.classList.toggle('show');
-                elements.toggleInfo.textContent = 
-                    elements.description.classList.contains('show') 
-                    ? 'トレーニング方法を隠す' 
-                    : 'トレーニング方法を表示';
-            });
-
-            // Rhythm count slider
-            elements.rhythmCount.addEventListener('input', (e) => {
-                elements.rhythmCountValue.textContent = e.target.value;
-            });
-
-            // Mute button
-            elements.muteBtn.addEventListener('click', () => {
-                isMuted = !isMuted;
-                elements.muteBtn.textContent = isMuted ? '音をON' : '音をOFF';
-                elements.muteBtn.classList.toggle('active', isMuted);
-            });
-
-            // Shuffle button
-            elements.shuffleBtn.addEventListener('click', shuffleTechniques);
-
-            // Sound buttons
-            document.querySelectorAll('.sound-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const sound = parseInt(btn.dataset.sound);
-                    if (btn.classList.contains('active')) {
-                        if (activeSounds.length > 1) {
-                            btn.classList.remove('active');
-                            activeSounds = activeSounds.filter(s => s !== sound);
-                        }
-                    } else {
-                        btn.classList.add('active');
-                        activeSounds.push(sound);
-                    }
-                    activeSounds.sort();
-                });
-            });
-
-            // Control buttons
-            elements.startBtn.addEventListener('click', startTraining);
-            elements.stopBtn.addEventListener('click', stopTraining);
-        }
-
-        function shuffleTechniques() {
-            // Shuffle techniques and sides for all 5 sounds
-            for (let i = 1; i <= 5; i++) {
-                const techSelect = document.getElementById(`tech${i}`);
-                const sideSelect = document.getElementById(`side${i}`);
-                
-                // Random technique
-                const randomTech = techniques[Math.floor(Math.random() * techniques.length)];
-                techSelect.value = randomTech;
-                
-                // Random side
-                const randomSide = sides[Math.floor(Math.random() * sides.length)];
-                sideSelect.value = randomSide;
-            }
-            
-            // Visual feedback
-            elements.shuffleBtn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                elements.shuffleBtn.style.transform = 'scale(1)';
-            }, 200);
-        }
-
-        function getTechniqueText(soundType) {
-            const techSelect = document.getElementById(`tech${soundType}`);
-            const sideSelect = document.getElementById(`side${soundType}`);
-            
-            if (!techSelect || !sideSelect) return '';
-            
-            const tech = techSelect.value;
-            const side = sideSelect.value;
-            
-            if (side === '両方') {
-                return tech;
-            } else {
-                return `${side}${tech}`;
-            }
-        }
-
-        function playSound(soundType) {
-            // Change color regardless of mute status
-            const config = soundConfig[soundType];
-            elements.rhythmIndicator.style.background = 
-                `radial-gradient(circle, ${config.color} 0%, ${config.color}66 60%, ${config.color}33 100%)`;
-            elements.rhythmIndicator.style.boxShadow = `0 0 50px ${config.color}`;
-            
-            // Visual feedback
-            elements.rhythmIndicator.classList.add('active');
-            elements.soundNumber.textContent = soundType;
-            elements.soundNumber.style.color = '#fff';
-            elements.soundNumber.style.textShadow = `0 0 20px ${config.color}`;
-            
-            // Show technique
-            elements.techniqueDisplay.textContent = getTechniqueText(soundType);
-            elements.techniqueDisplay.style.color = '#fff';
-            
-            // Play sound only if not muted
-            if (!isMuted && audioContext) {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.value = config.freq;
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.3);
-            }
-            
-            setTimeout(() => {
-                elements.rhythmIndicator.classList.remove('active');
-                elements.soundNumber.textContent = '';
-                elements.techniqueDisplay.textContent = '';
-                elements.rhythmIndicator.style.background = 
-                    'radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(204, 0, 0, 0.1) 100%)';
-                elements.rhythmIndicator.style.boxShadow = 'none';
-            }, 200);
-        }
-
-        function generateRhythmSequence() {
-            rhythmSequence = [];
-            const count = parseInt(elements.rhythmCount.value);
-            
-            for (let i = 0; i < count; i++) {
-                // Random interval between 0.3 and 1 second
-                const interval = Math.random() * 0.7 + 0.3;
-                // Random sound from active sounds
-                const sound = activeSounds[Math.floor(Math.random() * activeSounds.length)];
-                rhythmSequence.push({ interval: interval * 1000, sound });
-            }
-        }
-
-        function playRhythmSequence() {
-            if (currentRhythmIndex >= rhythmSequence.length) {
-                // Sequence complete, start rest phase
-                startRestPhase();
-                return;
-            }
-
-            const rhythm = rhythmSequence[currentRhythmIndex];
-            playSound(rhythm.sound);
-            currentRhythmIndex++;
-
-            rhythmTimer = setTimeout(() => {
-                playRhythmSequence();
-            }, rhythm.interval);
-        }
-
-        function startRestPhase() {
-            currentPhase = 'rest';
-            elements.statusDisplay.textContent = '休憩中 - リズムを再現してください';
-            elements.rhythmIndicator.style.background = 
-                'radial-gradient(circle, rgba(100, 100, 100, 0.3) 0%, rgba(50, 50, 50, 0.1) 100%)';
-            
-            // Random rest time
-            const restRange = elements.restTime.value.split('-').map(Number);
-            const restDuration = (Math.random() * (restRange[1] - restRange[0]) + restRange[0]) * 1000;
-            
-            rhythmTimer = setTimeout(() => {
-                if (isTraining) {
-                    startRhythmPhase();
-                }
-            }, restDuration);
-        }
-
-        function startRhythmPhase() {
-            currentPhase = 'rhythm';
-            elements.statusDisplay.textContent = 'リズムを聞いて覚えてください';
-            currentRhythmIndex = 0;
-            generateRhythmSequence();
-            playRhythmSequence();
-        }
-
-        function startTraining() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-
-            // Hide settings
-            elements.settingsPanel.classList.remove('show');
-            elements.menuToggle.classList.remove('active');
-            elements.menuToggle.innerHTML = '☰';
-
-            isTraining = true;
-            totalSeconds = parseInt(elements.trainingTime.value) * 60;
-            remainingSeconds = totalSeconds;
-
-            elements.startBtn.disabled = true;
-            elements.stopBtn.disabled = false;
-            elements.menuToggle.style.display = 'none';
-
-            // Start countdown
-            let countdown = 3;
-            elements.statusDisplay.textContent = `開始まで ${countdown}...`;
-            
-            const countdownInterval = setInterval(() => {
-                countdown--;
-                if (countdown > 0) {
-                    elements.statusDisplay.textContent = `開始まで ${countdown}...`;
-                    if (!isMuted) playSound(1);
-                } else {
-                    clearInterval(countdownInterval);
-                    startMainTraining();
-                }
-            }, 1000);
-        }
-
-        function startMainTraining() {
-            // Start timer
-            trainingTimer = setInterval(() => {
-                remainingSeconds--;
-                updateTimerDisplay();
-                
-                if (remainingSeconds <= 0) {
-                    stopTraining();
-                    elements.statusDisplay.textContent = 'トレーニング完了！';
-                    playVictorySound();
-                }
-            }, 1000);
-
-            // Start rhythm phase
-            startRhythmPhase();
-        }
-
-        function stopTraining() {
-            isTraining = false;
-            
-            if (trainingTimer) {
-                clearInterval(trainingTimer);
-                trainingTimer = null;
-            }
-            
-            if (rhythmTimer) {
-                clearTimeout(rhythmTimer);
-                rhythmTimer = null;
-            }
-
-            elements.startBtn.disabled = false;
-            elements.stopBtn.disabled = true;
-            elements.menuToggle.style.display = 'block';
-            elements.statusDisplay.textContent = 'スタートを押して開始';
-            elements.timerDisplay.textContent = '0:00';
-            elements.soundNumber.textContent = '';
-            elements.techniqueDisplay.textContent = '';
-            
-            // Reset indicator color
-            elements.rhythmIndicator.style.background = 
-                'radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(204, 0, 0, 0.1) 100%)';
-            elements.rhythmIndicator.style.boxShadow = 'none';
-        }
-
-        function updateTimerDisplay() {
-            const minutes = Math.floor(remainingSeconds / 60);
-            const seconds = remainingSeconds % 60;
-            elements.timerDisplay.textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function playVictorySound() {
-            if (isMuted || !audioContext) return;
-            
-            const notes = [523, 659, 784, 1047]; // C, E, G, C
-            notes.forEach((freq, i) => {
-                setTimeout(() => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.type = 'sine';
-                    oscillator.frequency.value = freq;
-                    
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                }, i * 150);
-            });
-        }
-
-        // PWA Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registered'))
-                    .catch(err => console.log('Service Worker registration failed'));
-            });
-        }
-
-        // Prevent zoom on iOS
-        document.addEventListener('gesturestart', (e) => {
-            e.preventDefault();
-        });
-
-        // Keep screen awake during training
-        if ('wakeLock' in navigator) {
-            let wakeLock = null;
-            
-            async function requestWakeLock() {
-                try {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                } catch (err) {
-                    console.error('Wake Lock error:', err);
-                }
-            }
-            
-            document.addEventListener('visibilitychange', () => {
-                if (isTraining && document.visibilityState === 'visible') {
-                    requestWakeLock();
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+        .sound-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 10px 2px;
+            background: #2a2a2a;
+            border: 2px solid #444;
