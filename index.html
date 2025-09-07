@@ -137,24 +137,41 @@
             margin-bottom: 10px;
         }
 
-        /* メニューを開くボタン */
+        /* メニューを開くボタン - 楕円形に修正 */
         .open-menu-btn {
             position: fixed;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             z-index: 9999;
-            background: #ff4444;
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
             color: white;
             border: none;
-            width: 45px;
-            height: 35px;
-            border-radius: 35%;
-            font-size: 1.2rem;
+            width: 60px;
+            height: 40px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .open-menu-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* スマホ表示時の調整 */
+        @media (max-width: 600px) {
+            .open-menu-btn {
+                top: 10px;
+                right: 10px;
+                width: 50px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
         }
 
         /* スプラッシュスクリーン */
@@ -214,6 +231,7 @@
             flex-direction: column;
             padding: 10px;
             overflow-y: auto;
+            padding-top: 60px; /* メニューボタン分の余白 */
         }
 
         .header {
@@ -223,6 +241,7 @@
             gap: 15px;
             margin-bottom: 10px;
             flex-wrap: wrap;
+            position: relative;
         }
 
         .logo {
@@ -475,6 +494,10 @@
         }
 
         @media (max-width: 600px) {
+            .container {
+                padding-top: 50px;
+            }
+            
             .rhythm-indicator {
                 width: 150px;
                 height: 150px;
@@ -492,6 +515,10 @@
             .color-indicator {
                 height: 3px;
             }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
         }
 
         @media (max-width: 400px) {
@@ -500,6 +527,10 @@
                 font-size: 0.65rem;
                 gap: 2px;
                 border-width: 1px;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -829,7 +860,7 @@
         let rhythmSequence = [];
         let currentRhythmIndex = 0;
 
-        // Sound configuration - 修正された色
+        // Sound configuration
         const soundConfig = {
             1: { freq: 440, color: '#FF6B6B' },     // 赤
             2: { freq: 523, color: '#FFD700' },     // 金
@@ -895,7 +926,7 @@
                 btn.classList.toggle('active', isMuted);
             });
 
-            // Shuffle button - 重複なしのランダム割り当て
+            // Shuffle button
             document.getElementById('shuffleBtn').addEventListener('click', () => {
                 const usedTechniques = new Set();
                 
@@ -903,21 +934,17 @@
                     const techSelect = document.getElementById(`tech${i}`);
                     const sideSelect = document.getElementById(`side${i}`);
                     
-                    // 未使用の技を探す
                     let availableTechniques = techniques.filter(t => !usedTechniques.has(t));
                     
-                    // 全部使い切った場合はリセット
                     if (availableTechniques.length === 0) {
                         usedTechniques.clear();
                         availableTechniques = [...techniques];
                     }
                     
-                    // ランダムに選択
                     const randomTech = availableTechniques[Math.floor(Math.random() * availableTechniques.length)];
                     techSelect.value = randomTech;
                     usedTechniques.add(randomTech);
                     
-                    // ランダムな左右
                     const randomSide = sides[Math.floor(Math.random() * sides.length)];
                     sideSelect.value = randomSide;
                 }
@@ -956,15 +983,14 @@
             // Visual feedback
             indicator.classList.add('active');
             
-            // 文字色を調整（明るい色の場合は黒、暗い色の場合は白）
-            const isLightColor = soundType === 2 || soundType === 3; // 金と緑
+            // 文字色を調整
+            const isLightColor = soundType === 2 || soundType === 3;
             const textColor = isLightColor ? '#000' : '#fff';
             
             // 既存の要素を取得して更新
             let soundNumberEl = document.getElementById('soundNumber');
             let techniqueDisplayEl = document.getElementById('techniqueDisplay');
             
-            // 要素が存在しない場合は作成
             if (!soundNumberEl) {
                 soundNumberEl = document.createElement('span');
                 soundNumberEl.id = 'soundNumber';
@@ -1023,7 +1049,7 @@
             
             indicator.appendChild(displayContainer);
             
-            // Play sound
+            // Play sound - 音量を2倍に修正
             if (!isMuted && audioContext) {
                 try {
                     const oscillator = audioContext.createOscillator();
@@ -1032,8 +1058,9 @@
                     oscillator.type = 'sine';
                     oscillator.frequency.value = config.freq;
                     
+                    // 音量を2倍に設定（0.5 → 1.0）
                     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
+                    gainNode.gain.linearRampToValueAtTime(1.0, audioContext.currentTime + 0.01);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
                     
                     oscillator.connect(gainNode);
@@ -1048,7 +1075,6 @@
             
             setTimeout(() => {
                 indicator.classList.remove('active');
-                // temp-displayクラスの要素だけを削除
                 const tempDisplay = indicator.querySelector('.temp-display');
                 if (tempDisplay) {
                     tempDisplay.remove();
@@ -1057,8 +1083,8 @@
             }, 200);
         }
 
-        // Simple beep for countdown
-        function playBeep(frequency) {
+        // Simple beep for countdown - 音量を2倍に修正、音の長さを延長
+        function playBeep(frequency, duration = 0.25) {
             if (!isMuted && audioContext) {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
@@ -1066,16 +1092,16 @@
                 oscillator.type = 'sine';
                 oscillator.frequency.value = frequency;
                 
-                // カウントダウン音も2倍に（0.3 → 0.6）
+                // 音量を最大に、持続時間も長めに
                 gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.6, audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                gainNode.gain.linearRampToValueAtTime(1.0, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
                 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
                 oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.15);
+                oscillator.stop(audioContext.currentTime + duration);
             }
         }
 
@@ -1152,31 +1178,28 @@
             document.getElementById('stopBtn').disabled = false;
             document.getElementById('openMenuBtn').style.display = 'none';
 
-            // Countdown - 音付きで開始
+            // Countdown
             let countdown = 3;
             document.getElementById('statusDisplay').textContent = `${countdown}`;
             
-            // 最初の「3」の音をすぐに鳴らす
-            playBeep(262, 0.2); // ド（C4）
+            playBeep(262, 0.2);
             
             const countdownInterval = setInterval(() => {
                 countdown--;
                 if (countdown > 0) {
                     document.getElementById('statusDisplay').textContent = `${countdown}`;
                     if (countdown === 2) {
-                        playBeep(330, 0.2); // ミ（E4）
+                        playBeep(330, 0.2);
                     } else if (countdown === 1) {
-                        playBeep(392, 0.2); // ソ（G4）
+                        playBeep(392, 0.2);
                     }
                 } else {
                     clearInterval(countdownInterval);
                     document.getElementById('statusDisplay').textContent = 'スタート！';
-                    // スタート音（高音の和音風）
-                    playBeep(523, 0.3); // 高いド（C5）
-                    setTimeout(() => playBeep(659, 0.3), 50); // 高いミ（E5）
-                    setTimeout(() => playBeep(784, 0.3), 100); // 高いソ（G5）
+                    playBeep(523, 0.3);
+                    setTimeout(() => playBeep(659, 0.3), 50);
+                    setTimeout(() => playBeep(784, 0.3), 100);
                     
-                    // 1秒待ってからメイントレーニング開始
                     setTimeout(() => {
                         if (isTraining) {
                             startMainTraining();
@@ -1209,10 +1232,8 @@
         }
 
         function stopTraining() {
-            // 即座にフラグを設定
             isTraining = false;
             
-            // すべてのタイマーを停止
             if (trainingTimer) {
                 clearInterval(trainingTimer);
                 trainingTimer = null;
@@ -1223,13 +1244,11 @@
                 rhythmTimer = null;
             }
             
-            // すべての可能なタイムアウトをクリア（念のため）
             for (let i = 1; i < 99999; i++) {
                 clearTimeout(i);
                 clearInterval(i);
             }
 
-            // UIをリセット
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
             document.getElementById('openMenuBtn').style.display = 'block';
@@ -1238,10 +1257,7 @@
             document.getElementById('soundNumber').textContent = '';
             document.getElementById('techniqueDisplay').textContent = '';
             
-            // 背景色を白に戻す
             document.getElementById('trainingDisplay').style.backgroundColor = 'white';
-            
-            // インジケーターをリセット
             document.getElementById('rhythmIndicator').classList.remove('active');
         }
 
@@ -1252,7 +1268,7 @@
                 `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        // PWA - Service Worker登録を修正
+        // PWA - Service Worker登録
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
