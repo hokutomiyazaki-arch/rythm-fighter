@@ -1251,7 +1251,11 @@
 
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
-            document.getElementById('openMenuBtn').style.display = 'block';
+            
+            // メニューボタンを表示（スタイルを維持）
+            const menuBtn = document.getElementById('openMenuBtn');
+            menuBtn.style.display = 'flex';
+            
             document.getElementById('statusDisplay').textContent = 'スタートを押して開始';
             document.getElementById('timerDisplay').textContent = '';
             document.getElementById('soundNumber').textContent = '';
